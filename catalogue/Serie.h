@@ -15,7 +15,7 @@ public:
 	// Implementaciones vacías (stubs) dejadas para otros desarrolladores
 	void play() const override {}
 	void printInfo() const override {
-		    cout << "-" << title << endl;
+		    cout << "-" << title << endl; //esta parte si quieren mas la pueden cambiar
 
 	}
 	Multimedia* clone() const override { return new Serie(*this); }
