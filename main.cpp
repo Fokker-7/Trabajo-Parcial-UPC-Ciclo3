@@ -16,7 +16,7 @@ void mostrarLista(ListaMultiMedia* head) {
 }
 
 int main() {
-    Catalogo catalogo("Mi catálogo 🎬");
+    Catalogo catalogo("Mi catálogo");
 
     Pelicula p1("Matrix", "ciencia ficcion", 1999, 120);
     Pelicula p4("Terminator", "ciencia ficcion", 1999, 120);
