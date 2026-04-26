@@ -84,7 +84,7 @@ public:
     // Busca por título; devuelve puntero al objeto (no propietario)
     Multimedia* find(const std::string& title) const;
 
-    ListaMultiMedia* get_general_recommendations();
+    ListaMultiMedia* get_general_recommendations();//funcion de copia??
     ListaMultiMedia* get_recommendations_by_genre(const std::string& genre);
     // Muestra información de todos los elementos (usa printInfo())
     void listAll() const {
