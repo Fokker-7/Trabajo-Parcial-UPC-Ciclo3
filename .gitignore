@@ -1,0 +1,7 @@
+# Ignorar compilados y temporales
+*.exe
+*.obj
+*.pdb
+*.ilk
+tempCodeRunnerFile.cpp
+.vscode/
