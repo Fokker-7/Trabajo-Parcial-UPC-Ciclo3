@@ -3,6 +3,7 @@
 #include "catalogue/Pelicula.h"
 #include "catalogue/Serie.h"
 #include "catalogue/Catalogo.cpp"
+#include "structures/ListaReproduccion.h"
 
 using namespace std;
 
@@ -17,6 +18,8 @@ void mostrarLista(ListaMultiMedia* head) {
 
 int main() {
     Catalogo catalogo("Mi catálogo");
+
+    ListaReproduccion<Multimedia*> listaReproduccion;
 
     Pelicula p1("Matrix", "ciencia ficcion", 1999, 120);
     Pelicula p4("Terminator", "ciencia ficcion", 1999, 120);
@@ -41,6 +44,8 @@ int main() {
         cout << "2. Buscar por titulo\n";
         cout << "3. Recomendaciones top favoritos(global)\n";
         cout << "4. Recomendacion por genero\n";
+        cout << "5. Agregar a lista de reproduccion\n"; //Cola
+        cout << "6. Reproducir mi lista y vaciar\n"; //Desencolar
         cout << "0. Salir\n";
         cout << "Seleccione una opcion: ";
         cin >> opcion;
@@ -106,6 +111,45 @@ int main() {
                 }
             }
             break;
+        }
+case 5: {
+            cout << "Ingrese titulo para agregar a lista de reproduccion: ";
+            cin.ignore();
+            string titulo;
+            getline(cin, titulo);
+
+            Multimedia* encontrado = catalogo.find(titulo);
+
+            if (encontrado) {
+                listaReproduccion.encolar(encontrado);
+                cout << "Agregado a lista de reproduccion\n";
+            } else {
+                cout << "No encontrado\n";
+            }
+            break;
+        }
+case 6:{
+            cout<<"\n=====Mi lista de reproduccion=========\n";
+            if (listaReproduccion.estaVacia()) {
+                cout << "Tu lista de reproduccion esta vacia.\n";
+            } else {
+               cout << "Contenido en cola:\n";
+                listaReproduccion.procesar([](Multimedia* m) {
+                    cout << " - " << m->getTitle() << " (" << m->getGenre() << ")\n";
+                });
+                cout << "--------------------------------------\n";
+
+                while (!listaReproduccion.estaVacia()) {
+                    Multimedia* actual = listaReproduccion.obtenerFrente();
+                    if (actual) {
+                        cout << "Reproduciendo: " << actual->getTitle() << "\n";
+                        actual->printInfo();
+                    }
+                    listaReproduccion.desencolar();
+                }
+            }
+         break;
+
         }
         case 0:
             cout << "Saliendo...\n";
