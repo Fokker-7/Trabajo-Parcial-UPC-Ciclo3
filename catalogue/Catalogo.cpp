@@ -25,7 +25,7 @@ ListaMultiMedia* Catalogo::get_general_recommendations() {
         curr = curr->next;
         count++;
     }
-
+    //xd
     if (curr) curr->next = nullptr;
 
     return sortedListByFavorites;
