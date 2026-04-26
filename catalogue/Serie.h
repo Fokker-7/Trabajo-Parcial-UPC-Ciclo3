@@ -1,6 +1,7 @@
 // Serie.h
 #pragma once
-
+#include <iostream>
+using namespace std;
 #include "Multimedia.h"
 
 class Serie : public Multimedia {
@@ -13,7 +14,10 @@ public:
 
 	// Implementaciones vacías (stubs) dejadas para otros desarrolladores
 	void play() const override {}
-	void printInfo() const override {}
+	void printInfo() const override {
+		    cout << "-" << title << endl;
+
+	}
 	Multimedia* clone() const override { return new Serie(*this); }
 };
 

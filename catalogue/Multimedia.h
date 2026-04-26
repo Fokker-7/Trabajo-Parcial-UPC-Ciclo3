@@ -28,6 +28,7 @@ public:
 	virtual void play() const = 0;
 	virtual void printInfo() const = 0;
 	virtual Multimedia* clone() const = 0;
+	void addFavorite() { countFavorites++; } //favoritos
 
 protected:
 	std::string title;

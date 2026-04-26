@@ -85,7 +85,7 @@ public:
     Multimedia* find(const std::string& title) const;
 
     ListaMultiMedia* get_general_recommendations();
-
+    ListaMultiMedia* get_recommendations_by_genre(const std::string& genre);
     // Muestra información de todos los elementos (usa printInfo())
     void listAll() const {
         ListaMultiMedia* cur = head;
@@ -106,7 +106,7 @@ public:
         head = tail = nullptr;
         count = 0;
     }
-
+    
     std::size_t size() const { return count; }
 
     const std::string& getName() const { return name; }
