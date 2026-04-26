@@ -21,4 +21,3 @@ public:
 	}
 	Multimedia* clone() const override { return new Pelicula(*this); }
 };
-

@@ -33,6 +33,7 @@ int main() {
     catalogo.add(p4);
 
     int opcion;
+    int xd;
 
     do {
         cout << "\n===== MENU PRINCIPAL =====\n";
