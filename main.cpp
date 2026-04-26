@@ -80,9 +80,10 @@ int main() {
                 top = top->next;
                 delete temp;
             }
-
+            //:v
             break;
         }
+        //esta te busca quien esta primero en el genero
         case 4: {
             cout << "Ingrese genero: ";
             cin.ignore();
@@ -97,7 +98,6 @@ int main() {
                 cout << "\nRecomendado:\n";
                 mostrarLista(rec);
 
-                // liberar memoria
                 while (rec) {
                     ListaMultiMedia* temp = rec;
                     rec = rec->next;
