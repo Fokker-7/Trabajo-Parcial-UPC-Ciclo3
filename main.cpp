@@ -3,7 +3,7 @@
 #include "catalogue/Pelicula.h"
 #include "catalogue/Serie.h"
 #include "catalogue/Catalogo.cpp"
-#include "structures/ListaReproduccion.h"
+#include "catalogue/Reproductor.h"
 
 using namespace std;
 
@@ -112,7 +112,7 @@ int main() {
             }
             break;
         }
-case 5: {
+        case 5: {
             cout << "Ingrese titulo para agregar a lista de reproduccion: ";
             cin.ignore();
             string titulo;
@@ -128,26 +128,8 @@ case 5: {
             }
             break;
         }
-case 6:{
-            cout<<"\n=====Mi lista de reproduccion=========\n";
-            if (listaReproduccion.estaVacia()) {
-                cout << "Tu lista de reproduccion esta vacia.\n";
-            } else {
-               cout << "Contenido en cola:\n";
-                listaReproduccion.procesar([](Multimedia* m) {
-                    cout << " - " << m->getTitle() << " (" << m->getGenre() << ")\n";
-                });
-                cout << "--------------------------------------\n";
-
-                while (!listaReproduccion.estaVacia()) {
-                    Multimedia* actual = listaReproduccion.obtenerFrente();
-                    if (actual) {
-                        cout << "Reproduciendo: " << actual->getTitle() << "\n";
-                        actual->printInfo();
-                    }
-                    listaReproduccion.desencolar();
-                }
-            }
+        case 6:{
+            Reproductor::iniciar(listaReproduccion);
          break;
 
         }
