@@ -8,3 +8,4 @@ tempCodeRunnerFile.cpp
 *.o
 *.vscode/
 app/main
+.vscode/tasks.json
