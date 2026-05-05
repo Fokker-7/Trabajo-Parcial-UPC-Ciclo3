@@ -1,4 +1,5 @@
-#include<iostream>
+#pragma once
+#include <iostream>
 
 template <typename T>
 class ListaReproduccion
@@ -22,7 +23,7 @@ public:
         final=nullptr;
         cantidad=0;
     }
-    ~ListaReproduccion(){}
+    ~ListaReproduccion(){vaciar();}
 
     bool estaVacia() const { return cantidad == 0; }
     size_t size() const { return cantidad; }
@@ -73,7 +74,5 @@ public:
         }
         
     }
-
-
 
 };

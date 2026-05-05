@@ -1,6 +1,5 @@
-#include "../algorithms/mergeSort.h"
-#include "../catalogue/Catalogo.h"
-
+#include "algorithms/mergeSort.h"
+#include "Catalogo.h"
 
 Multimedia* Catalogo::find(const std::string& title) const {
     ListaMultiMedia* cur = head;
@@ -18,15 +17,6 @@ ListaMultiMedia* Catalogo::get_general_recommendations() {
     mergeSort(&sortedListByFavorites, [](Multimedia* a, Multimedia* b) {
         return a->getCountFavorites() > b->getCountFavorites();
     });
-
-    ListaMultiMedia* curr = sortedListByFavorites;
-    int count = 0;
-    while (curr != nullptr && curr->next != nullptr && count < 10) {
-        curr = curr->next;
-        count++;
-    }
-    //xd
-    if (curr) curr->next = nullptr;
 
     return sortedListByFavorites;
 }
@@ -67,7 +57,7 @@ ListaMultiMedia* Catalogo::get_recommendations_by_genre(const std::string& genre
         return a->getCountFavorites() > b->getCountFavorites();
     });
 
-    // solo el p´rimero
+    // solo el primero
     if (filtered->next) {
         ListaMultiMedia* temp = filtered->next;
         filtered->next = nullptr;

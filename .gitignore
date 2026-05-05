@@ -5,3 +5,7 @@
 *.ilk
 tempCodeRunnerFile.cpp
 .vscode/
+*.o
+*.vscode/
+app/main
+.vscode/tasks.json
