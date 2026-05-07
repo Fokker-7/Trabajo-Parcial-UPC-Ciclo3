@@ -1,6 +1,5 @@
 # Compilador
-CXX = g++
-
+CXX = clang++
 # Flags
 CXXFLAGS = -std=c++14 -Wall -Wextra -g -I./core -I./ui -I./helpers -I./infra -I./app
 
