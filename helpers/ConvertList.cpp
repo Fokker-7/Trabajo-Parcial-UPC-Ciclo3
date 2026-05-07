@@ -1,13 +1,22 @@
 #include "ConvertList.h"
 
-std::vector<Multimedia*> toVector(ListaMultiMedia* head) {
+std::vector<Multimedia*> toVector(
+    ListaDoble<Multimedia*>::Nodo* head
+) {
+
     std::vector<Multimedia*> items;
 
     auto cur = head;
+
     while (cur) {
-        if (cur->media) {
-            items.push_back(cur->media);
+
+        if (cur->dato) {
+
+            items.push_back(
+                cur->dato
+            );
         }
+
         cur = cur->next;
     }
 
