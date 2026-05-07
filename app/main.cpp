@@ -3,55 +3,119 @@
 #include <sstream>
 
 #include "catalogue/Catalogo.h"
+
 #include "catalogue/Pelicula.h"
 #include "catalogue/Serie.h"
 
-#include "reproductor/Reproductor.h"
+#include "catalogue/Multimedia.h"
+
+#include "structures/Cola.h"
+
 #include "CatalogoUI.h"
 
 using namespace std;
 
 void loadData(Catalogo& catalogo) {
-    std::ifstream file("data/catalogo.csv");
 
-    std::string line;
+    ifstream file("data/catalogo.csv");
 
-    while (std::getline(file, line)) {
-        std::stringstream ss(line);
+    if (!file.is_open()) {
 
-        std::string title, genre, type;
-        int year, duration;
+        cout
+            << "No se pudo abrir catalogo.csv\n";
 
-        std::getline(ss, title, ',');
-        std::getline(ss, genre, ',');
+        return;
+    }
+
+    string line;
+
+    while (getline(file, line)) {
+
+        stringstream ss(line);
+
+        string title;
+        string genre;
+        string type;
+
+        int year;
+        int duration;
+
+        getline(ss, title, ',');
+
+        getline(ss, genre, ',');
+
         ss >> year;
-        ss.ignore();
-        ss >> duration;
-        ss.ignore();
-        std::getline(ss, type, ',');
 
+        ss.ignore();
+
+        ss >> duration;
+
+        ss.ignore();
+
+        getline(ss, type, ',');
+
+        //
+        // Factory simple segun tipo
+        //
         if (type == "pelicula") {
-            catalogo.add(Pelicula(title, genre, year, duration));
-        } else {
-            catalogo.add(Serie(title, genre, year, duration));
+
+            catalogo.add(
+                Pelicula(
+                    title,
+                    genre,
+                    year,
+                    duration
+                )
+            );
+        }
+        else if (type == "serie") {
+
+            catalogo.add(
+                Serie(
+                    title,
+                    genre,
+                    year,
+                    duration
+                )
+            );
         }
     }
+
+    file.close();
 }
 
 int main() {
 
-    // 1. Core del sistema
-    Catalogo catalogo("Mi catálogo");
-    ListaReproduccion<Multimedia*> listaReproduccion;
+    //
+    // Core del sistema
+    //
+    Catalogo catalogo(
+        "Mi catalogo multimedia"
+    );
 
-    // 2. Datos iniciales
+    //
+    // Cola FIFO de reproduccion
+    //
+    Cola<Multimedia*> listaReproduccion;
+
+    //
+    // Cargar data inicial
+    //
     loadData(catalogo);
 
-    // 3. UI layer
-    CatalogoUI ui(catalogo, listaReproduccion);
+    //
+    // UI Layer
+    //
+    CatalogoUI ui(
+        catalogo,
+        listaReproduccion
+    );
 
-    // 4. Arrancar app
+    //
+    // Arrancar app
+    //
     ui.run();
 
     return 0;
-}
+
+};

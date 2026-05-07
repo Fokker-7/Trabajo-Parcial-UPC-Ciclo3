@@ -1,7 +1,8 @@
 // Pelicula.h
 #pragma once
+
+#include <string>
 #include <iostream>
-using namespace std;
 #include "Multimedia.h"
 
 class Pelicula : public Multimedia {
@@ -15,7 +16,7 @@ public:
 	// Implementaciones vacías (stubs) dejadas para otros desarrolladores
 	void play() const override {}
 	void printInfo() const override {
-		    cout << "Pelicula: " << title 
+		    std::cout << "Pelicula: " << title 
               << " (" << year << ") "
               << "Favs: " << countFavorites << "\n"; // no lo puse para el otro pero si quieren copien y peguen este en series 
 	}
