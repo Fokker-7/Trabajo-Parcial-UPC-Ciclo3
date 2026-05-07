@@ -1,14 +1,21 @@
-#include "../catalogue/Catalogo.h"
+#pragma once
 
-// Divide la lista en dos mitades
+#include "structures/ListaDoble.h"
+
+//
+// SPLIT
+//
+template <typename T>
 void split(
-    ListaMultiMedia* head,
-    ListaMultiMedia** first,
-    ListaMultiMedia** second
+    typename ListaDoble<T>::Nodo* head,
+    typename ListaDoble<T>::Nodo** first,
+    typename ListaDoble<T>::Nodo** second
 ) {
 
-    ListaMultiMedia* slow = head;
-    ListaMultiMedia* fast = head->next;
+    using Nodo = typename ListaDoble<T>::Nodo;
+
+    Nodo* slow = head;
+    Nodo* fast = head->next;
 
     while (fast && fast->next) {
         slow = slow->next;
@@ -24,47 +31,78 @@ void split(
         (*second)->prev = nullptr;
 }
 
-template <typename Compare>
-ListaMultiMedia* merge(
-    ListaMultiMedia* a,
-    ListaMultiMedia* b,
+//
+// MERGE
+//
+template <typename T, typename Compare>
+typename ListaDoble<T>::Nodo* merge(
+    typename ListaDoble<T>::Nodo* a,
+    typename ListaDoble<T>::Nodo* b,
     Compare comp
 ) {
+
+    using Nodo = typename ListaDoble<T>::Nodo;
 
     if (!a) return b;
     if (!b) return a;
 
-    ListaMultiMedia* result = nullptr;
+    Nodo* result = nullptr;
 
-    if (comp(a->media, b->media)) {
+    if (comp(a->dato, b->dato)) {
+
         result = a;
-        result->next = merge(a->next, b, comp);
-        if (result->next) result->next->prev = result;
+
+        result->next = merge<T>(
+            a->next,
+            b,
+            comp
+        );
+
+        if (result->next)
+            result->next->prev = result;
+
     } else {
+
         result = b;
-        result->next = merge(a, b->next, comp);
-        if (result->next) result->next->prev = result;
+
+        result->next = merge<T>(
+            a,
+            b->next,
+            comp
+        );
+
+        if (result->next)
+            result->next->prev = result;
     }
 
     result->prev = nullptr;
+
     return result;
 }
 
-template <typename Compare>
-void mergeSort(ListaMultiMedia** headRef, Compare comp) {
+//
+// MERGE SORT
+//
+template <typename T, typename Compare>
+void mergeSort(
+    typename ListaDoble<T>::Nodo** headRef,
+    Compare comp
+) {
 
-    ListaMultiMedia* head = *headRef;
+    using Nodo = typename ListaDoble<T>::Nodo;
+
+    Nodo* head = *headRef;
 
     if (!head || !head->next)
         return;
 
-    ListaMultiMedia* a;
-    ListaMultiMedia* b;
+    Nodo* a;
+    Nodo* b;
 
-    split(head, &a, &b);
+    split<T>(head, &a, &b);
 
-    mergeSort(&a, comp);
-    mergeSort(&b, comp);
+    mergeSort<T>(&a, comp);
+    mergeSort<T>(&b, comp);
 
-    *headRef = merge(a, b, comp);
+    *headRef = merge<T>(a, b, comp);
 }
