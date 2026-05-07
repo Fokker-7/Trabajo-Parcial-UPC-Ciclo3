@@ -1,23 +1,39 @@
 #pragma once
+
 #include "catalogue/Catalogo.h"
-#include "structures/ListaReproduccion.h"
+
+#include "structures/Cola.h"
+
 #include "catalogue/Multimedia.h"
 
 const int PAGE_SIZE = 5;
 
 class CatalogoUI {
+
 private:
+
     Catalogo& catalogo;
-    ListaReproduccion<Multimedia*>& lista;
+
+    Cola<Multimedia*>& lista;
 
     void renderHome();
+
     void showSearch();
+
     void showGenero();
+
     void showLista();
-    void showPaginated(ListaMultiMedia* head);
+
+    void showPaginated(
+        ListaDoble<Multimedia*>* lista
+    );
 
 public:
-    CatalogoUI(Catalogo& c, ListaReproduccion<Multimedia*>& l);
+
+    CatalogoUI(
+        Catalogo& c,
+        Cola<Multimedia*>& l
+    );
 
     void run();
 };
