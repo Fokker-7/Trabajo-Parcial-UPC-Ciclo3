@@ -1,10 +1,18 @@
-# Compilador
-CXX = clang++
+# Detección del Sistema Operativo
+ifeq ($(OS),Windows_NT)
+    CXX = g++
+    TARGET = app/main.exe
+    COMANDO_RUN = .\app\main.exe
+    CLEAN_CMD = del /Q /F $(subst /,\,$(OBJ)) $(subst /,\,$(TARGET))
+else
+    CXX = clang++
+    TARGET = app/main
+    COMANDO_RUN = ./$(TARGET)
+    CLEAN_CMD = rm -f $(OBJ) $(TARGET)
+endif
+
 # Flags
 CXXFLAGS = -std=c++14 -Wall -Wextra -g -I./core -I./ui -I./helpers -I./infra -I./app
-
-# Ejecutable
-TARGET = app/main
 
 # Archivos fuente
 SRC = app/main.cpp \
@@ -12,8 +20,8 @@ SRC = app/main.cpp \
       core/reproductor/Reproductor.cpp \
       infra/input/Keyboard.cpp \
       infra/utils/Console.cpp \
-	  ui/CatalogoUI.cpp \
-	  helpers/ConvertList.cpp
+      ui/CatalogoUI.cpp \
+      helpers/ConvertList.cpp
 
 # Objetos (.o)
 OBJ = $(SRC:.cpp=.o)
@@ -28,8 +36,8 @@ $(TARGET): $(OBJ)
 
 # Limpiar
 clean:
-	rm -f $(OBJ) $(TARGET)
+	-$(CLEAN_CMD)
 
 # Ejecutar
 run: $(TARGET)
-	./$(TARGET)
+	$(COMANDO_RUN)

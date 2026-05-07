@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+#include <cstddef>
 
 template <typename T>
 class ListaDoble {
