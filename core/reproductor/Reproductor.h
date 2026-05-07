@@ -1,8 +1,12 @@
 #pragma once
 
-#include "structures/ListaReproduccion.h"
+#include "structures/Cola.h"
+#include "structures/Pila.h"
+
 #include "catalogue/Multimedia.h"
 
 namespace Reproductor {
-    void iniciar(ListaReproduccion<Multimedia*>& listaReproduccion);
+    void iniciar(
+        Cola<Multimedia*>& listaReproduccion
+    );
 }
