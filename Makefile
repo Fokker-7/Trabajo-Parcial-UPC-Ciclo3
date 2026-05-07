@@ -2,7 +2,7 @@
 CXX = g++
 
 # Flags
-CXXFLAGS = -std=c++14 -Wall -Wextra -g -I./core -I./ui -I./helpers -I./app
+CXXFLAGS = -std=c++14 -Wall -Wextra -g -I./core -I./ui -I./helpers -I./infra -I./app
 
 # Ejecutable
 TARGET = app/main

@@ -1,6 +1,6 @@
 #include "Reproductor.h"
-#include "../../infra/input/Keyboard.h"
-#include "../../infra/utils/Console.h"
+#include "input/Keyboard.h"
+#include "infra/utils/Console.h"
 
 #include <iostream>
 #include <thread>
