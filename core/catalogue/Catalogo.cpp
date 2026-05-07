@@ -1,68 +1,130 @@
-#include "algorithms/mergeSort.h"
 #include "Catalogo.h"
+#include "../algorithms/mergeSort.h"
+
+Catalogo::Catalogo(const std::string& name)
+    : name(name) {}
+
+Catalogo::~Catalogo() {
+    clear();
+}
+
+void Catalogo::add(const Multimedia& m) {
+    lista.push_back(m.clone());
+}
 
 Multimedia* Catalogo::find(const std::string& title) const {
-    ListaMultiMedia* cur = head;
-    while (cur) {
-        if (cur->media && cur->media->getTitle() == title)
-            return cur->media;
-        cur = cur->next;
-    }
-    return nullptr;
-}
 
-ListaMultiMedia* Catalogo::get_general_recommendations() {
-    ListaMultiMedia* sortedListByFavorites = this->head->copyList(this->head); // lista copiada, por eso es q en recomendados sale igual al mostrar lista
-
-    mergeSort(&sortedListByFavorites, [](Multimedia* a, Multimedia* b) {
-        return a->getCountFavorites() > b->getCountFavorites();
+    auto nodo = lista.buscar([&](Multimedia* media) {
+        return media &&
+               media->getTitle() == title;
     });
 
-    return sortedListByFavorites;
+    return nodo ? nodo->dato : nullptr;
 }
 
-/*esta funcion hace que ingreso el genero q quiero y me diante addFavorite hace que se le añada 1
- mas al favorito por lo tanto me recomiende ese*/
-ListaMultiMedia* Catalogo::get_recommendations_by_genre(const std::string& genre) {
+void Catalogo::listAll() const {
 
-    ListaMultiMedia* filtered = nullptr;
-    ListaMultiMedia* tailFiltered = nullptr;
+    auto cur = lista.getHead();
 
-    ListaMultiMedia* cur = head;
-
-    //filtrar por genero
     while (cur) {
-        if (cur->media && cur->media->getGenre() == genre) {
 
-            ListaMultiMedia* nuevo = new ListaMultiMedia(
-                cur->media->clone()
-            );
+        if (cur->dato)
+            cur->dato->printInfo();
 
-            if (!filtered) {
-                filtered = tailFiltered = nuevo;
-            } else {
-                tailFiltered->next = nuevo;
-                nuevo->prev = tailFiltered;
-                tailFiltered = nuevo;
-            }
-        }
+        cur = cur->next;
+    }
+}
+
+void Catalogo::clear() {
+    lista.clear();
+}
+
+std::size_t Catalogo::size() const {
+    return lista.size();
+}
+
+const std::string& Catalogo::getName() const {
+    return name;
+}
+
+void Catalogo::setName(const std::string& n) {
+    name = n;
+}
+
+ListaDoble<Multimedia*>*
+Catalogo::get_general_recommendations() {
+
+    auto* copia =
+        new ListaDoble<Multimedia*>();
+
+    auto cur = lista.getHead();
+
+    while (cur) {
+
+        copia->push_back(
+            cur->dato->clone()
+        );
+
         cur = cur->next;
     }
 
-    //Si no hay nada
-    if (!filtered) return nullptr;
+    mergeSort<Multimedia*>(
+        &copia->getHeadRef(),
+        [](Multimedia* a, Multimedia* b) {
+
+            return a->getCountFavorites() >
+                   b->getCountFavorites();
+        }
+    );
+
+    copia->rebuildTail();
+
+    return copia;
+}
+
+ListaDoble<Multimedia*>*
+Catalogo::get_recommendations_by_genre(
+    const std::string& genre
+) {
+
+    auto* filtered =
+        new ListaDoble<Multimedia*>();
+
+    auto cur = lista.getHead();
+
+    // Filtrar por género
+    while (cur) {
+
+        if (
+            cur->dato &&
+            cur->dato->getGenre() == genre
+        ) {
+
+            filtered->push_back(
+                cur->dato->clone()
+            );
+        }
+
+        cur = cur->next;
+    }
+
+    // Si no hay resultados
+    if (filtered->size() == 0) {
+        delete filtered;
+        return nullptr;
+    }
 
     // Ordenar por favoritos
-    mergeSort(&filtered, [](Multimedia* a, Multimedia* b) {
-        return a->getCountFavorites() > b->getCountFavorites();
-    });
+    mergeSort<Multimedia*>(
+        &filtered->getHeadRef(),
+        [](Multimedia* a, Multimedia* b) {
 
-    // solo el primero
-    if (filtered->next) {
-        ListaMultiMedia* temp = filtered->next;
-        filtered->next = nullptr;
-        delete temp; 
-    }
+            return a->getCountFavorites() >
+                   b->getCountFavorites();
+        }
+    );
+
+    filtered->rebuildTail();
 
     return filtered;
 }
