@@ -1,6 +1,6 @@
 #include "Reproductor.h"
-#include "../input/Keyboard.h"
-#include "../utils/Console.h"
+#include "../../infra/input/Keyboard.h"
+#include "../../infra/utils/Console.h"
 
 #include <iostream>
 #include <thread>
@@ -67,9 +67,10 @@ namespace Reproductor {
                     imprimirTiempo(tiempoActual);
                     cout << "/";
                     imprimirTiempo(duracionSeg);
-                    cout << "]";
+                    cout << "] ";
 
-                    if (pausado) cout << " [PAUSADO]";
+                    if (pausado) {cout << " [PAUSADO]  \r";}
+                    else {cout << "                \r";}
 
                     cout << flush;
 
