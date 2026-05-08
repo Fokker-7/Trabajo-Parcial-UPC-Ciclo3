@@ -28,6 +28,8 @@ private:
         ListaDoble<Multimedia*>* lista
     );
 
+    void showTop10();
+
 public:
 
     CatalogoUI(

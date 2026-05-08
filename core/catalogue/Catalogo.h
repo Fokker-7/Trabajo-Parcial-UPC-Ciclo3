@@ -24,6 +24,8 @@ public:
         const std::string& genre
     );
 
+    ListaDoble<Multimedia*>* get_top_10();
+
     void listAll() const;
 
     void clear();

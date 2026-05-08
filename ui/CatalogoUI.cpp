@@ -6,6 +6,8 @@
 
 #include <iostream>
 
+#include "../infra/utils/Console.h"
+
 using namespace std;
 
 CatalogoUI::CatalogoUI(
@@ -17,7 +19,7 @@ CatalogoUI::CatalogoUI(
 
 void CatalogoUI::renderHome() {
 
-    system("clear");
+    Console::clear();
 
     cout << "========================================\n";
     cout << "        🎬 TU CATALOGO\n";
@@ -52,6 +54,8 @@ void CatalogoUI::renderHome() {
         << "[3] Lista de reproduccion\n"
 
         << "[4] Ver todo\n"
+
+        << "[5] Top 10 favoritos\n"
 
         << "[0] Salir\n";
 }
@@ -220,6 +224,11 @@ void CatalogoUI::run() {
 
                 break;
             }
+            case 5:
+                
+                showTop10();
+
+                break;
         }
 
     } while (opcion != 0);
@@ -249,7 +258,7 @@ void CatalogoUI::showPaginated(
 
     while (true) {
 
-        system("clear");
+        Console::clear();
 
         cout << "========================================\n";
         cout << "        📚 CATALOGO (PAGINADO)\n";
@@ -303,4 +312,36 @@ void CatalogoUI::showPaginated(
             break;
         }
     }
+}
+
+void CatalogoUI::showTop10(){
+    
+    Console::clear();
+
+    cout << "========================================\n";
+    cout << "        🏆 TOP 10 FAVORITOS\n";
+    cout << "========================================\n\n";
+    
+    auto top10= catalogo.get_top_10();
+
+    if (!top10 || top10->size()==0)
+    {
+        cout<<"No hay contenido suficiente para armar el top. \n";
+    }else {
+        auto cur= top10->getHead();
+        int pos=1;
+
+        while (cur)
+        {
+            cout<< pos << ". "<< cur->dato->getTitle()
+            << " ("<< cur->dato->getCountFavorites()<< " favs)\n";
+            cur=cur->next;
+            pos++;
+        }
+    }
+
+    cout<<"\nPresione Enter para volver al menu...";
+    cin.ignore();
+    cin.get();
+    
 }

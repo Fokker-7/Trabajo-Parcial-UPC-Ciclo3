@@ -1,5 +1,7 @@
 #include "Catalogo.h"
 #include "../algorithms/mergeSort.h"
+#include "../algorithms/HeapSort.h"
+#include <vector>
 
 Catalogo::Catalogo(const std::string& name)
     : name(name) {}
@@ -127,4 +129,38 @@ Catalogo::get_recommendations_by_genre(
     filtered->rebuildTail();
 
     return filtered;
+}
+
+ListaDoble<Multimedia*>* Catalogo::get_top_10(){
+    std::vector<Multimedia*> arrTemp;
+    auto cur=lista.getHead();
+
+    while (cur)
+    {
+        if (cur->dato)
+        {
+            arrTemp.push_back(cur->dato);
+        }
+        cur=cur->next;
+        
+    }
+
+    int n=arrTemp.size();
+    if(n==0) return nullptr;
+
+    auto compFavorites=[] (Multimedia* a, Multimedia*b){
+        return a->getCountFavorites() < b->getCountFavorites();
+    };
+
+    heapSort(arrTemp.data(), n, compFavorites);
+
+    auto* top10 = new ListaDoble<Multimedia*>();
+    int limit= (n<10)? n : 10;
+
+    for (int i = n-1; i >= n- limit; i--)
+    {
+        top10->push_back(arrTemp[i]->clone());
+    }
+
+    return top10;
 }
