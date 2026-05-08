@@ -317,7 +317,7 @@ void CatalogoUI::showPaginated(
 void CatalogoUI::showTop10(){
     
     Console::clear();
-
+    
     cout << "========================================\n";
     cout << "        🏆 TOP 10 FAVORITOS\n";
     cout << "========================================\n\n";
