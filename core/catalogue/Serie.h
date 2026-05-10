@@ -7,8 +7,8 @@ using namespace std;
 class Serie : public Multimedia {
 public:
 	Serie() = default;
-	Serie(const std::string& title, const std::string& genre, int year, int duration)
-		: Multimedia(title, genre, year, duration) {}
+	Serie(int id, const std::string& title, const std::string& genre, int year, int duration)
+		: Multimedia(id, title, genre, year, duration) {}
 
 	virtual ~Serie() = default;
 

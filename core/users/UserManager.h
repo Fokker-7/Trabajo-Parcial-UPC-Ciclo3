@@ -26,7 +26,7 @@ public:
 
     void clear();
 
-    void registerUser(
+    bool registerUser(
         const std::string& username,
         const std::string& role
     );
@@ -34,6 +34,10 @@ public:
     bool login(const std::string& username);
 
     void logout();
+    bool isLoggedIn() const;
+    bool usernameExists(
+        const std::string& username
+    ) const;
 
     Persona* getCurrentUser() const;
 

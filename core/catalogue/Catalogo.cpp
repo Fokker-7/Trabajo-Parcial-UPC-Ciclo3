@@ -2,6 +2,7 @@
 #include "../algorithms/mergeSort.h"
 #include "../algorithms/HeapSort.h"
 #include <vector>
+#include <algorithm>
 
 Catalogo::Catalogo(const std::string& name)
     : name(name) {}
@@ -35,6 +36,21 @@ void Catalogo::listAll() const {
 
         cur = cur->next;
     }
+}
+Multimedia* Catalogo::findById(int id) {
+
+    auto cur = lista.getHead();
+
+    while (cur) {
+
+        if (cur->dato && cur->dato->getId() == id) {
+            return cur->dato;
+        }
+
+        cur = cur->next;
+    }
+
+    return nullptr;
 }
 
 void Catalogo::clear() {
@@ -70,17 +86,6 @@ Catalogo::get_general_recommendations() {
         cur = cur->next;
     }
 
-    mergeSort<Multimedia*>(
-        &copia->getHeadRef(),
-        [](Multimedia* a, Multimedia* b) {
-
-            return a->getCountFavorites() >
-                   b->getCountFavorites();
-        }
-    );
-
-    copia->rebuildTail();
-
     return copia;
 }
 
@@ -94,12 +99,19 @@ Catalogo::get_recommendations_by_genre(
 
     auto cur = lista.getHead();
 
+    auto toLower = [] (std::string s){
+        std::transform(s.begin(), s.end(), s.begin(),[](unsigned char c){return std::tolower(c);});
+        return s;
+    };
+
+    std::string genreWatch= toLower(genre);
+
     // Filtrar por género
     while (cur) {
 
         if (
             cur->dato &&
-            cur->dato->getGenre() == genre
+            toLower(cur->dato->getGenre())== genreWatch
         ) {
 
             filtered->push_back(

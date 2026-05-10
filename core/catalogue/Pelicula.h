@@ -8,8 +8,8 @@
 class Pelicula : public Multimedia {
 public:
 	Pelicula() = default;
-	Pelicula(const std::string& title, const std::string& genre, int year, int duration)
-		: Multimedia(title, genre, year, duration) {}
+	Pelicula(int id, const std::string& title, const std::string& genre, int year, int duration)
+		: Multimedia(id, title, genre, year, duration) {}
 
 	virtual ~Pelicula() = default;
 
