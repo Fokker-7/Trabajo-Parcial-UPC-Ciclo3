@@ -34,6 +34,21 @@ void Catalogo::listAll() const {
         cur = cur->next;
     }
 }
+Multimedia* Catalogo::findById(int id) {
+
+    auto cur = lista.getHead();
+
+    while (cur) {
+
+        if (cur->dato && cur->dato->getId() == id) {
+            return cur->dato;
+        }
+
+        cur = cur->next;
+    }
+
+    return nullptr;
+}
 
 void Catalogo::clear() {
     lista.clear();
@@ -67,17 +82,6 @@ Catalogo::get_general_recommendations() {
 
         cur = cur->next;
     }
-
-    mergeSort<Multimedia*>(
-        &copia->getHeadRef(),
-        [](Multimedia* a, Multimedia* b) {
-
-            return a->getCountFavorites() >
-                   b->getCountFavorites();
-        }
-    );
-
-    copia->rebuildTail();
 
     return copia;
 }
