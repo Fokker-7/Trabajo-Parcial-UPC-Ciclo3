@@ -10,14 +10,26 @@ using namespace std;
 
 CatalogoUI::CatalogoUI(
     Catalogo& c,
-    Cola<Multimedia*>& l
+    Cola<Multimedia*>& l,
+    UserManager& um,
+    LogHandler& logger,
+    FavoriteManager& fm
 )
     : catalogo(c),
-      lista(l) {}
+      lista(l), userManager(um), logger(logger), favoriteManager(fm) {};
 
 void CatalogoUI::renderHome() {
 
     system("clear");
+
+    if (userManager.isLoggedIn()) {
+        cout << "👤 Usuario: "
+            << userManager.getCurrentUser()->getUsername()
+            << "\n";
+    }
+    else {
+        cout << "👤 Invitado (login para más funciones)\n";
+    }
 
     cout << "========================================\n";
     cout << "        🎬 TU CATALOGO\n";
@@ -28,9 +40,19 @@ void CatalogoUI::renderHome() {
     auto* top =
         catalogo.get_general_recommendations();
 
+    if (!top) {
+        cout << "No hay recomendaciones.\n";
+
+        return;
+    }
+
     auto cur = top->getHead();
 
     while (cur) {
+
+        if (!cur->dato) {
+            break;
+        }
 
         cout
             << "[ "
@@ -53,6 +75,10 @@ void CatalogoUI::renderHome() {
 
         << "[4] Ver todo\n"
 
+        << "[5] Login\n"
+        << "[6] Registrarse\n"
+        << "[7] Favoritos\n"
+
         << "[0] Salir\n";
 }
 
@@ -71,11 +97,132 @@ void CatalogoUI::showSearch() {
 
     if (encontrado) {
 
+        system("clear");
+
         encontrado->printInfo();
+
+        cout
+            << "\n\n"
+
+            << "[1] Agregar a favoritos\n"
+
+            << "[2] Agregar a cola\n"
+
+            << "[0] Volver\n";
+
+        int op;
+
+        cin >> op;
+
+        switch (op) {
+
+            //
+            // Favoritos
+            //
+            case 1: {
+
+                if (!userManager.isLoggedIn()) {
+
+                    cout
+                        << "\nDebes iniciar sesion.\n";
+
+                    cin.ignore();
+
+                    cin.get();
+
+                    return;
+                }
+
+                favoriteManager.addFavorite(
+                    userManager.getCurrentUser(),
+                    encontrado,
+                    logger
+                );
+
+                cout
+                    << "\nAgregado a favoritos.\n";
+
+                cin.ignore();
+
+                cin.get();
+
+                break;
+            }
+
+            //
+            // Cola
+            //
+            case 2: {
+
+                lista.encolar(encontrado);
+
+                logger.addLog(
+                    "Se agrego a cola: "
+                    + encontrado->getTitle()
+                );
+
+                cout
+                    << "\nAgregado a cola.\n";
+
+                cin.ignore();
+
+                cin.get();
+
+                break;
+            }
+        }
     }
     else {
 
         cout << "No encontrado\n";
+
+        cin.ignore();
+
+        cin.get();
+    }
+}
+
+void CatalogoUI::showLogin() {
+
+    cin.ignore();
+
+    string username;
+
+    cout << "Username: ";
+    getline(cin, username);
+
+    if (userManager.login(username)) {
+
+        logger.addLog(username + " inició sesión");
+
+        cout << "Login exitoso\n";
+    }
+    else {
+
+        cout << "Usuario no encontrado\n";
+    }
+
+    cin.get();
+}
+
+void CatalogoUI::showRegister() {
+
+    cin.ignore();
+
+    string username;
+
+    cout << "Nuevo username: ";
+    getline(cin, username);
+
+    if (userManager.registerUser(username, "USER")) {
+
+        logger.addLog(username + " se registró");
+
+        cout << "Usuario creado.\n";
+    }
+    else {
+
+        cout << "Username ocupado.\n";
     }
 
     cin.get();
@@ -125,20 +272,21 @@ void CatalogoUI::showGenero() {
 
 void CatalogoUI::showLista() {
 
-    cout
-        << "\n"
+    if (!userManager.isLoggedIn()) {
 
-        << "[1] Agregar a cola\n"
+        cout << "\nDebes iniciar sesión para usar la lista.\n";
+        cin.ignore();
+        cin.get();
+        return;
+    }
 
-        << "[2] Reproducir cola\n";
+    cout << "\n"
+         << "[1] Agregar a cola\n"
+         << "[2] Reproducir cola\n";
 
     int op;
-
     cin >> op;
 
-    //
-    // Agregar a cola
-    //
     if (op == 1) {
 
         cin.ignore();
@@ -146,7 +294,6 @@ void CatalogoUI::showLista() {
         cout << "Titulo: ";
 
         string titulo;
-
         getline(cin, titulo);
 
         auto encontrado =
@@ -156,21 +303,21 @@ void CatalogoUI::showLista() {
 
             lista.encolar(encontrado);
 
-            cout
-                << "Agregado a cola.\n";
+            logger.addLog(
+                userManager.getCurrentUser()->getUsername()
+                + " agregó a cola: "
+                + encontrado->getTitle()
+            );
+
+            cout << "Agregado a cola.\n";
         }
         else {
-
-            cout
-                << "No encontrado.\n";
+            cout << "No encontrado.\n";
         }
 
         cin.get();
     }
 
-    //
-    // Reproducir
-    //
     else if (op == 2) {
 
         Reproductor::iniciar(lista);
@@ -186,27 +333,20 @@ void CatalogoUI::run() {
         renderHome();
 
         cout << "Seleccione: ";
-
         cin >> opcion;
 
         switch (opcion) {
 
             case 1:
-
                 showSearch();
-
                 break;
 
             case 2:
-
                 showGenero();
-
                 break;
 
             case 3:
-
                 showLista();
-
                 break;
 
             case 4: {
@@ -220,9 +360,60 @@ void CatalogoUI::run() {
 
                 break;
             }
+
+            case 5:
+                showLogin();
+                break;
+
+            case 6:
+                showRegister();
+                break;
+
+            case 7:
+                showFavorites();
+                break;
         }
 
     } while (opcion != 0);
+}
+
+void CatalogoUI::showFavorites() {
+
+    if (!userManager.isLoggedIn()) {
+
+        cout << "\nDebes iniciar sesión.\n";
+        cin.ignore();
+        cin.get();
+        return;
+    }
+
+    auto user = userManager.getCurrentUser();
+
+    auto favIds =
+        favoriteManager.getFavoritesByUser(user->getId());
+
+    if (favIds.empty()) {
+
+        cout << "\nNo tienes favoritos aún.\n";
+        cin.ignore();
+        cin.get();
+        return;
+    }
+
+    cout << "\n🔥 TUS FAVORITOS\n\n";
+
+    for (int id : favIds) {
+
+        auto media = catalogo.findById(id);
+
+        if (media) {
+
+            media->printInfo();
+        }
+    }
+
+    cin.ignore();
+    cin.get();
 }
 
 void CatalogoUI::showPaginated(
