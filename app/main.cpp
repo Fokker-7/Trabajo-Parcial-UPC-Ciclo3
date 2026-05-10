@@ -8,6 +8,7 @@
 #include "catalogue/Serie.h"
 
 #include "catalogue/Multimedia.h"
+#include "favorites/FavoritesManager.h"
 
 #include "structures/Cola.h"
 
@@ -28,6 +29,8 @@ void loadData(Catalogo& catalogo) {
     }
 
     string line;
+
+    int nextId = 1;
 
     while (getline(file, line)) {
 
@@ -61,6 +64,7 @@ void loadData(Catalogo& catalogo) {
 
             catalogo.add(
                 Pelicula(
+                    nextId++,
                     title,
                     genre,
                     year,
@@ -72,6 +76,7 @@ void loadData(Catalogo& catalogo) {
 
             catalogo.add(
                 Serie(
+                    nextId++,
                     title,
                     genre,
                     year,
@@ -103,12 +108,27 @@ int main() {
     //
     loadData(catalogo);
 
+    UserManager userManager(
+        "data/users.txt"
+    );
+
+    FavoriteManager favoriteManager(
+        "data/favorites.txt"
+    );
+
+    LogHandler logger(
+        "data/logs.txt"
+    );
+
     //
     // UI Layer
     //
     CatalogoUI ui(
         catalogo,
-        listaReproduccion
+        listaReproduccion,
+        userManager,
+        logger,
+        favoriteManager
     );
 
     //
