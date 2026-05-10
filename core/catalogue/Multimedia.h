@@ -4,14 +4,21 @@
 class Multimedia {
 public:
 	Multimedia() = default;
-	Multimedia(const std::string& title, const std::string& genre, int year, int duration)
-		: title(title), genre(genre), year(year), duration(duration) {
+	Multimedia(
+		int id,
+		const std::string& title,
+		const std::string& genre,
+		int year,
+		int duration
+	)
+		: id(id), title(title), genre(genre), year(year), duration(duration) {
             this->countFavorites = 0;
         }
 
 	virtual ~Multimedia() = default;
 
 	// Getters
+	int getId() const { return id; }
 	const std::string& getTitle() const { return title; }
 	const std::string& getGenre() const { return genre; }
 	int getYear() const { return year; }
@@ -31,11 +38,12 @@ public:
 	void addFavorite() { countFavorites++; } //hacer un contador de favoritos
 
 protected:
-	std::string title;
-	std::string genre;
+    int id;
+    std::string title;
+    std::string genre;
     int countFavorites;
-	int year = 0;
-	int duration = 0; // en segundos
+    int year;
+    int duration;
 };
 
 
