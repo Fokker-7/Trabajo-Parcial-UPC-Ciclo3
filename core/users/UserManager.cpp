@@ -19,6 +19,24 @@ UserManager::~UserManager() {
     clear();
 }
 
+bool UserManager::isLoggedIn() const {
+    return currentUser != nullptr;
+}
+
+bool UserManager::usernameExists(
+    const std::string& username
+) const {
+
+    for (Persona* user : users) {
+
+        if (user->getUsername() == username) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void UserManager::clear() {
     for (Persona* user : users) {
         delete user;
@@ -93,11 +111,13 @@ void UserManager::save() {
     file.close();
 }
 
-void UserManager::registerUser(
+bool UserManager::registerUser(
     const std::string& username,
     const std::string& role
 ) {
-
+    if (usernameExists(username)) {
+        return false;
+    }
     Persona* newUser = nullptr;
 
     if (role == "ADMIN") {
@@ -120,6 +140,8 @@ void UserManager::registerUser(
     nextId++;
 
     save();
+
+    return true;
 }   
 
 bool UserManager::login(
