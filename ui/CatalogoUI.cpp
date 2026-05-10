@@ -100,7 +100,7 @@ void CatalogoUI::showSearch() {
 
     if (encontrado) {
 
-        system("clear");
+        Console::clear();
 
         encontrado->printInfo();
 
