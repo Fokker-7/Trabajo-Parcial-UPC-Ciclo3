@@ -34,6 +34,7 @@ private:
         ListaDoble<Multimedia*>* lista
     );
 
+    void showTop10();
     void showLogin();
     void showRegister();
     void showFavorites();
