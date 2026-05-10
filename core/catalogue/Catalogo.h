@@ -23,6 +23,7 @@ public:
     ListaDoble<Multimedia*>* get_recommendations_by_genre(
         const std::string& genre
     );
+    Multimedia* findById(int id);
 
     void listAll() const;
 

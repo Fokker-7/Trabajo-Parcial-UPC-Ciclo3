@@ -75,8 +75,6 @@ typename ListaDoble<T>::Nodo* merge(
             result->next->prev = result;
     }
 
-    result->prev = nullptr;
-
     return result;
 }
 
@@ -105,4 +103,6 @@ void mergeSort(
     mergeSort<T>(&b, comp);
 
     *headRef = merge<T>(a, b, comp);
+    if (*headRef)
+        (*headRef)->prev = nullptr;
 }
