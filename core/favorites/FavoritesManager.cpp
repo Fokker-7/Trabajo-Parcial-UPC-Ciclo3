@@ -123,6 +123,8 @@ void FavoriteManager::addFavorite(
         Favorite(userId, mediaId)
     );
 
+    media->addFavorite();
+
     save();
 
     logger.addLog(
