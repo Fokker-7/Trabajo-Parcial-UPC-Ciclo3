@@ -3,6 +3,7 @@
 #include "structures/ListaDoble.h"
 #include "catalogue/Multimedia.h"
 #include <string>
+#include <unordered_map>
 
 class Catalogo {
 public:
@@ -12,7 +13,7 @@ public:
     Catalogo(const Catalogo&) = delete;
     Catalogo& operator=(const Catalogo&) = delete;
 
-    void add(const Multimedia& m);
+    void add(Multimedia* m);
 
     bool remove(const std::string& title);
 
@@ -25,7 +26,7 @@ public:
     );
     Multimedia* findById(int id);
 
-    ListaDoble<Multimedia*>* get_top_10();
+    std::vector<Multimedia*> get_top_10();
 
     void listAll() const;
 
@@ -39,4 +40,5 @@ public:
 private:
     ListaDoble<Multimedia*> lista;
     std::string name;
+    std::unordered_map<int, Multimedia*> index;
 };

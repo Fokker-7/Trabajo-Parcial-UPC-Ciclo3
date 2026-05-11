@@ -11,8 +11,10 @@ Catalogo::~Catalogo() {
     clear();
 }
 
-void Catalogo::add(const Multimedia& m) {
-    lista.push_back(m.clone());
+void Catalogo::add(Multimedia* m) {
+    lista.push_back(m);
+
+    index[m->getId()] = m;
 }
 
 Multimedia* Catalogo::find(const std::string& title) const {
@@ -39,16 +41,10 @@ void Catalogo::listAll() const {
 }
 Multimedia* Catalogo::findById(int id) {
 
-    auto cur = lista.getHead();
+    auto it = index.find(id);
 
-    while (cur) {
-
-        if (cur->dato && cur->dato->getId() == id) {
-            return cur->dato;
-        }
-
-        cur = cur->next;
-    }
+    if (it != index.end())
+        return it->second;
 
     return nullptr;
 }
@@ -143,36 +139,32 @@ Catalogo::get_recommendations_by_genre(
     return filtered;
 }
 
-ListaDoble<Multimedia*>* Catalogo::get_top_10(){
-    std::vector<Multimedia*> arrTemp;
-    auto cur=lista.getHead();
+std::vector<Multimedia*> Catalogo::get_top_10() {
 
-    while (cur)
-    {
+    std::vector<Multimedia*> arrTemp;
+
+    auto cur = lista.getHead();
+
+    while (cur) {
         if (cur->dato)
-        {
             arrTemp.push_back(cur->dato);
-        }
-        cur=cur->next;
-        
+
+        cur = cur->next;
     }
 
-    int n=arrTemp.size();
-    if(n==0) return nullptr;
+    if (arrTemp.empty())
+        return {};
 
-    auto compFavorites=[] (Multimedia* a, Multimedia*b){
+    auto compFavorites = [](Multimedia* a, Multimedia* b) {
         return a->getCountFavorites() < b->getCountFavorites();
     };
 
-    heapSort(arrTemp.data(), n, compFavorites);
+    heapSort(arrTemp.data(), arrTemp.size(), compFavorites);
 
-    auto* top10 = new ListaDoble<Multimedia*>();
-    int limit= (n<10)? n : 10;
+    int limit = std::min((int)arrTemp.size(), 10);
 
-    for (int i = n-1; i >= n- limit; i--)
-    {
-        top10->push_back(arrTemp[i]->clone());
-    }
-
-    return top10;
+    return std::vector<Multimedia*>(
+        arrTemp.begin(),
+        arrTemp.begin() + limit
+    );
 }
