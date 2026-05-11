@@ -102,77 +102,24 @@ void CatalogoUI::showSearch() {
 
         Console::clear();
 
-        encontrado->printInfo();
-
-        cout
-            << "\n\n"
-
-            << "[1] Agregar a favoritos\n"
-
-            << "[2] Agregar a cola\n"
-
-            << "[0] Volver\n";
+        cout << "[1] Ver detalle\n";
+        cout << "[2] Vista rapida\n";
+        cout << "[0] Volver\n";
 
         int op;
-
         cin >> op;
 
         switch (op) {
 
-            //
-            // Favoritos
-            //
-            case 1: {
-
-                if (!userManager.isLoggedIn()) {
-
-                    cout
-                        << "\nDebes iniciar sesion.\n";
-
-                    cin.ignore();
-
-                    cin.get();
-
-                    return;
-                }
-
-                favoriteManager.addFavorite(
-                    userManager.getCurrentUser(),
-                    encontrado,
-                    logger
-                );
-
-                cout
-                    << "\nAgregado a favoritos.\n";
-
-                cin.ignore();
-
-                cin.get();
-
+            case 1:
+                showMediaDetail(encontrado);
                 break;
-            }
 
-            //
-            // Cola
-            //
-            case 2: {
-
-                lista.encolar(encontrado);
-
-                logger.addLog(
-                    "Se agrego a cola: "
-                    + encontrado->getTitle()
-                );
-
-                cout
-                    << "\nAgregado a cola.\n";
-
+            case 2:
+                encontrado->printInfo();
                 cin.ignore();
-
                 cin.get();
-
                 break;
-            }
         }
     }
     else {
@@ -415,43 +362,60 @@ void CatalogoUI::showFavorites() {
         return;
     }
 
-    cout << "\n🔥 TUS FAVORITOS\n\n";
+    while (true) {
 
-    for (int id : favIds) {
+        Console::clear();
 
-        auto media = catalogo.findById(id);
+        cout << "\n🔥 TUS FAVORITOS\n\n";
 
-        if (media) {
+        int index = 1;
+        std::vector<Multimedia*> items;
 
-            media->printInfo();
+        for (int id : favIds) {
+
+            auto media = catalogo.findById(id);
+
+            if (media) {
+                cout << index << ". " << media->getTitle() << "\n";
+                items.push_back(media);
+                index++;
+            }
+        }
+
+        cout << "\n--------------------------------\n";
+        cout << "[NUM] Ver detalle\n";
+        cout << "[0] Volver\n";
+        cout << "--------------------------------\n";
+        cout << "Seleccion: ";
+
+        int op;
+        cin >> op;
+
+        if (op == 0) return;
+
+        if (op > 0 && op <= (int)items.size()) {
+            items[op - 1]->printDetail();
+            cout << "\nEnter para volver...";
+            cin.ignore();
+            cin.get();
         }
     }
-
-    cin.ignore();
-    cin.get();
 }
 
 void CatalogoUI::showPaginated(
     ListaDoble<Multimedia*>* lista
 ) {
 
-    auto items =
-        toVector(lista->getHead());
+    auto items = toVector(lista->getHead());
 
     if (items.empty()) {
-
         cout << "No hay elementos.\n";
-
         cin.get();
-
         return;
     }
 
     int page = 0;
-
-    int totalPages =
-        (items.size() + PAGE_SIZE - 1)
-        / PAGE_SIZE;
+    int totalPages = (items.size() + PAGE_SIZE - 1) / PAGE_SIZE;
 
     while (true) {
 
@@ -461,84 +425,169 @@ void CatalogoUI::showPaginated(
         cout << "        📚 CATALOGO (PAGINADO)\n";
         cout << "========================================\n\n";
 
-        int start =
-            page * PAGE_SIZE;
-
-        int end =
-            min(
-                start + PAGE_SIZE,
-                (int)items.size()
-            );
+        int start = page * PAGE_SIZE;
+        int end = min(start + PAGE_SIZE, (int)items.size());
 
         for (int i = start; i < end; i++) {
-
-            cout
-                << "- "
-                << items[i]->getTitle()
-                << " ("
-                << items[i]->getYear()
-                << ")\n";
+            cout << (i - start + 1) << ". "
+                 << items[i]->getTitle()
+                 << " (" << items[i]->getYear() << ")\n";
         }
 
-        cout
-            << "\nPagina "
-            << (page + 1)
-            << "/"
-            << totalPages
-            << "\n";
+        cout << "\n----------------------------------------\n";
+        cout << "[NUM] Ver detalle\n";
+        cout << "[N] Siguiente pagina\n";
+        cout << "[P] Pagina anterior\n";
+        cout << "[Q] Salir\n";
+        cout << "----------------------------------------\n";
 
-        cout
-            << "[N] Sig  [P] Ant  [Q] Salir\n";
+        cout << "Seleccion: ";
 
-        char c;
+        string input;
+        cin >> input;
 
-        cin >> c;
-
-        if (c == 'N' || c == 'n') {
-
-            if (page < totalPages - 1)
-                page++;
-        }
-        else if (c == 'P' || c == 'p') {
-
-            if (page > 0)
-                page--;
-        }
-        else if (c == 'Q' || c == 'q') {
-
+        // SALIR
+        if (input == "q" || input == "Q")
             break;
+
+        // SIGUIENTE
+        else if (input == "n" || input == "N") {
+            if (page < totalPages - 1) page++;
+        }
+
+        // ANTERIOR
+        else if (input == "p" || input == "P") {
+            if (page > 0) page--;
+        }
+
+        // DETALLE POR NUMERO
+        else {
+            try {
+                int num = stoi(input);
+                int index = start + (num - 1);
+
+                if (index >= start && index < end) {
+                    showMediaDetail(items[index]);
+                }
+
+            } catch (...) {
+                cout << "\nEntrada invalida.\n";
+                cin.ignore();
+                cin.get();
+            }
         }
     }
 }
 
-void CatalogoUI::showTop10(){
-    
-    Console::clear();
-    
-    cout << "========================================\n";
-    cout << "        🏆 TOP 10 FAVORITOS\n";
-    cout << "========================================\n\n";
-    
-    auto top10= catalogo.get_top_10();
+void CatalogoUI::showTop10() {
 
-    if (!top10 || top10->size()==0)
-    {
-        cout<<"No hay contenido suficiente para armar el top. \n";
-    }else {
-        auto cur= top10->getHead();
-        int pos=1;
+    while (true) {
 
-        while (cur)
-        {
-            cout<< pos << ". "<< cur->dato->getTitle()
-            << " ("<< cur->dato->getCountFavorites()<< " favs)\n";
-            cur=cur->next;
-            pos++;
+        Console::clear();
+
+        cout << "========================================\n";
+        cout << "        🏆 TOP 10 FAVORITOS\n";
+        cout << "========================================\n\n";
+
+        auto items = catalogo.get_top_10();
+
+        if (items.empty()) {
+            cout << "No hay contenido suficiente para armar el top.\n";
+
+            cout << "\nPresione Enter para volver...";
+            cin.ignore();
+            cin.get();
+            return;
+        }
+
+        for (size_t i = 0; i < items.size(); i++) {
+
+            cout << (i + 1) << ". "
+                 << items[i]->getTitle()
+                 << " (" << items[i]->getCountFavorites()
+                 << " favs)\n";
+        }
+
+        cout << "\n--------------------------------\n";
+        cout << "[NUM] Ver detalle\n";
+        cout << "[0] Volver\n";
+        cout << "--------------------------------\n";
+        cout << "Seleccion: ";
+
+        int op;
+        cin >> op;
+
+        if (op == 0)
+            return;
+
+        if (op > 0 && op <= (int)items.size()) {
+
+            Console::clear();
+
+            items[op - 1]->printDetail();
+
+            cout << "\nEnter para volver...";
+            cin.ignore();
+            cin.get();
         }
     }
+}
 
-    cout<<"\nPresione Enter para volver al menu...";
-    cin.ignore();
-    cin.get();
-    
+void CatalogoUI::showMediaDetail(Multimedia* media) {
+
+    if (!media) return;
+
+    Console::clear();
+
+    media->printDetail();
+
+    cout << "\n\n";
+
+    cout << "[1] Agregar a favoritos\n";
+    cout << "[2] Agregar a cola\n";
+    cout << "[0] Volver\n";
+
+    int op;
+    cin >> op;
+
+    switch (op) {
+
+        case 1: {
+
+            if (!userManager.isLoggedIn()) {
+
+                cout << "\nDebes iniciar sesión.\n";
+                cin.ignore();
+                cin.get();
+                return;
+            }
+
+            favoriteManager.addFavorite(
+                userManager.getCurrentUser(),
+                media,
+                logger
+            );
+
+            cout << "\nAgregado a favoritos.\n";
+            cin.ignore();
+            cin.get();
+
+            break;
+        }
+
+        case 2: {
+
+            lista.encolar(media);
+
+            logger.addLog(
+                "Se agrego a cola: " + media->getTitle()
+            );
+
+            cout << "\nAgregado a cola.\n";
+            cin.ignore();
+            cin.get();
+
+            break;
+        }
+    }
 }

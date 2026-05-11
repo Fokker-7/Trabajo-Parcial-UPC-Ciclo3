@@ -38,6 +38,7 @@ private:
     void showLogin();
     void showRegister();
     void showFavorites();
+    void showMediaDetail(Multimedia* media);
 
 public:
 
