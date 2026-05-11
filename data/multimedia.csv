@@ -1,0 +1,27 @@
+id,title,genre,year,duration,type,directorId
+
+1,Matrix,accion,1999,120,pelicula,1
+2,Breaking Bad,drama,2008,50,serie,2
+3,Avengers,accion,2012,140,pelicula,3
+4,Dexter,drama,2017,45,serie,4
+5,Inception,accion,2010,148,pelicula,5
+6,Interstellar,ficcion,2014,169,pelicula,5
+7,Titanic,romance,1997,195,pelicula,6
+8,The Dark Knight,accion,2008,152,pelicula,5
+9,Stranger Things,terror,2016,55,serie,7
+10,Friends,comedia,1994,22,serie,8
+11,The Office,comedia,2005,22,serie,9
+12,Game of Thrones,fantasia,2011,60,serie,10
+13,Narcos,crimen,2015,49,serie,11
+14,The Witcher,fantasia,2019,60,serie,12
+15,Joker,drama,2019,122,pelicula,13
+16,Gladiator,accion,2000,155,pelicula,14
+17,The Godfather,crimen,1972,175,pelicula,15
+18,Shrek,animacion,2001,90,pelicula,16
+19,Toy Story,animacion,1995,81,pelicula,17
+20,La La Land,musical,2016,128,pelicula,18
+21,Breaking Bad El Camino,crimen,2019,122,pelicula,2
+22,Peaky Blinders,crimen,2013,60,serie,19
+23,House of Cards,drama,2013,58,serie,20
+24,Black Mirror,ficcion,2011,60,serie,21
+25,Spider-Man,accion,2002,121,pelicula,22
