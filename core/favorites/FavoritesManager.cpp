@@ -67,6 +67,19 @@ void FavoriteManager::save() {
     file.close();
 }
 
+void FavoriteManager::rehydrate(Catalogo& catalogo) {
+
+    for (const Favorite& fav : favorites) {
+
+        Multimedia* media =
+            catalogo.findById(fav.getMediaId());
+
+        if (media) {
+            media->addFavorite();
+        }
+    }
+}
+
 bool FavoriteManager::isFavorite(
     int userId,
     int mediaId
@@ -109,8 +122,6 @@ void FavoriteManager::addFavorite(
     favorites.push_back(
         Favorite(userId, mediaId)
     );
-
-    media->addFavorite();
 
     save();
 

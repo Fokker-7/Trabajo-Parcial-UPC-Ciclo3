@@ -4,6 +4,7 @@
 #include <string>
 
 #include "favorites/Favorite.h"
+#include "catalogue/Catalogo.h"
 
 class Persona;
 class Multimedia;
@@ -41,4 +42,5 @@ public:
     std::vector<int> getFavoritesByUser(
         int userId
     ) const;
+    void rehydrate(Catalogo& catalogo);
 };
