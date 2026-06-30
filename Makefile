@@ -20,6 +20,7 @@ SRC = app/main.cpp \
 	core/reproductor/Reproductor.cpp \
 	infra/input/Keyboard.cpp \
 	infra/utils/Console.cpp \
+	infra/datasets/DatasetManager.cpp \
 	ui/CatalogoUI.cpp \
 	helpers/ConvertList.cpp \
 	core/users/UserManager.cpp \
